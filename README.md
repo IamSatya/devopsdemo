@@ -3,38 +3,40 @@
 [![GitHub Actions CI/CD](https://img.shields.io/badge/GitHub_Actions-AWS_Access_Keys-blue?logo=github-actions)](.github/workflows/deploy.yml)
 [![Terraform](https://img.shields.io/badge/Terraform-1.6+-purple?logo=terraform)](terraform/)
 [![AWS EC2](https://img.shields.io/badge/AWS-EC2%20%2B%20Nginx-orange?logo=amazon-aws)](terraform/main.tf)
-[![Automated SSH Key](https://img.shields.io/badge/SSH_Key-Automated_RSA_4096-emerald)]()
+[![Teardown Support](https://img.shields.io/badge/Teardown-Manual_Destroy_Supported-red)](.github/workflows/destroy.yml)
 
-A complete DevOps pipeline that automatically **provisions AWS EC2 infrastructure using Terraform** and **deploys your Healthcare Web Application** on git push using **AWS IAM Access Keys**.
+A complete DevOps pipeline that automatically **provisions AWS EC2 infrastructure using Terraform** and **deploys your Healthcare Web Application** on git push.
 
 ---
 
-## 🔑 GitHub Secrets Configuration
+## 🧹 How to Destroy AWS Resources (Teardown)
 
-Add these **3 Secrets** to your GitHub Repository (**Settings > Secrets and variables > Actions**):
+When you are finished testing and want to delete all AWS resources (EC2 instance, Security Group, Elastic IP) to prevent any charges:
+
+### Option 1: Via GitHub Actions Web Interface (Easiest)
+1. Go to your GitHub Repository > **Actions** tab.
+2. Select **Manual Destroy AWS Infrastructure** workflow from the left sidebar.
+3. Click **Run workflow** > **Run workflow**.
+4. GitHub Actions will run `terraform destroy -auto-approve` and delete all AWS resources automatically!
+
+### Option 2: Via Local Terminal
+From your computer terminal inside the project directory:
+```bash
+cd terraform
+terraform destroy -auto-approve
+```
+
+---
+
+## 🔑 Required GitHub Secrets
+
+Add these **3 Secrets** in GitHub Repository (**Settings > Secrets and variables > Actions**):
 
 | Secret Name | Value to Enter |
 | :--- | :--- |
-| `AWS_ACCESS_KEY_ID` | Your AWS IAM Access Key ID (e.g. `AKIAIOSFODNN7EXAMPLE`) |
-| `AWS_SECRET_ACCESS_KEY` | Your AWS IAM Secret Access Key (e.g. `wJalrXUtnFEMI/K...`) |
-| `AWS_REGION` | `us-east-1` (or your target region) |
-
-*(Note: SSH Keys and Terraform state are managed 100% automatically by the workflow!)*
-
----
-
-## ⚡ How the Automated Pipeline Works
-
-1. **Job 1 (Provision AWS Infrastructure)**:
-   - Authenticates using `AWS_ACCESS_KEY_ID` & `AWS_SECRET_ACCESS_KEY`.
-   - Executes `terraform apply -auto-approve` to provision/update the EC2 server, Security Group, and Elastic IP.
-   - Generates a dynamic 4096-bit RSA SSH key pair for deployment.
-   - Commits updated Terraform state back to the GitHub repository automatically.
-
-2. **Job 2 (Deploy Website)**:
-   - Connects to the EC2 server via SSH using the generated key pair.
-   - Synchronizes `website/` files to `/var/www/html/`.
-   - Reloads Nginx so updates are live immediately at `http://<EC2_PUBLIC_IP>`.
+| `AWS_ACCESS_KEY_ID` | Your AWS Access Key ID |
+| `AWS_SECRET_ACCESS_KEY` | Your AWS Secret Access Key |
+| `AWS_REGION` | `us-east-1` (or your preferred region) |
 
 ---
 
@@ -44,7 +46,8 @@ Add these **3 Secrets** to your GitHub Repository (**Settings > Secrets and vari
 aws-devops/
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml          # GitHub Actions Access Keys CI/CD Workflow
+│       ├── deploy.yml          # Automated Terraform Provision & Deployment Workflow
+│       └── destroy.yml         # Manual AWS Resource Teardown Workflow
 ├── website/
 │   ├── assets/                 # Healthcare visual assets
 │   ├── index.html              # Healthcare service web application

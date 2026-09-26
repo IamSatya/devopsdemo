@@ -1,0 +1,52 @@
+name: Manual Destroy AWS Infrastructure
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  destroy-aws-infrastructure:
+    name: 🧹 Destroy AWS Infrastructure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
+
+      - name: Setup Terraform CLI
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+
+      - name: Terraform Init
+        run: |
+          cd terraform
+          terraform init -upgrade
+
+      - name: Terraform Destroy
+        run: |
+          cd terraform
+          terraform destroy -auto-approve
+
+      - name: Commit Updated State Back to GitHub
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(terraform): update state after destroy [skip ci]"
+          file_pattern: "terraform/terraform.tfstate*"
+
+      - name: Destroy Summary Report
+        run: |
+          echo "### 🧹 AWS Infrastructure Destroyed Successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "All EC2 instances, Security Groups, and Elastic IPs have been deleted." >> $GITHUB_STEP_SUMMARY
