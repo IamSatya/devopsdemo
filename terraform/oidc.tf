@@ -40,6 +40,18 @@ resource "aws_iam_role_policy_attachment" "ec2_full" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
 }
 
+# Attach S3 Permissions for Remote Terraform State
+resource "aws_iam_role_policy_attachment" "s3_full" {
+  role       = aws_iam_role.github_actions_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
+
+# Attach DynamoDB Permissions for State Locking
+resource "aws_iam_role_policy_attachment" "dynamodb_full" {
+  role       = aws_iam_role.github_actions_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+}
+
 # 4. Output the Role ARN to be added as a GitHub Secret
 output "github_actions_role_arn" {
   description = "Set this value as the AWS_ROLE_TO_ASSUME secret in your GitHub Repository"
