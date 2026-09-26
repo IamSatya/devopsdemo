@@ -1,4 +1,4 @@
-name: AWS Provision & Deploy CI/CD Pipeline (Automated SSH & Git State)
+name: AWS Provision & Deploy CI/CD Pipeline (Access Keys & Git State)
 
 on:
   push:
@@ -8,7 +8,6 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write
   contents: write
 
 jobs:
@@ -16,7 +15,7 @@ jobs:
   # Job 1: Provision AWS Infrastructure & Generate SSH Key Pair (Terraform)
   # --------------------------------------------------------------------------
   provision-aws-infrastructure:
-    name: ☁️ Provision AWS Infrastructure & SSH Key
+    name: ☁️ Provision AWS Infrastructure (Terraform)
     runs-on: ubuntu-latest
     outputs:
       ec2_public_ip: ${{ steps.tf_outputs.outputs.ec2_ip }}
@@ -29,10 +28,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: Configure AWS Credentials (OIDC or Secret Keys)
+      - name: Configure AWS Credentials (IAM Access Keys)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
@@ -95,7 +93,7 @@ jobs:
         with:
           host: ${{ needs.provision-aws-infrastructure.outputs.ec2_public_ip }}
           username: 'ubuntu'
-          key: ${{ secrets.EC2_SSH_KEY || needs.provision-aws-infrastructure.outputs.ssh_key }}
+          key: ${{ needs.provision-aws-infrastructure.outputs.ssh_key }}
           port: 22
           source: "website/*"
           target: "/var/www/html"
@@ -107,7 +105,7 @@ jobs:
         with:
           host: ${{ needs.provision-aws-infrastructure.outputs.ec2_public_ip }}
           username: 'ubuntu'
-          key: ${{ secrets.EC2_SSH_KEY || needs.provision-aws-infrastructure.outputs.ssh_key }}
+          key: ${{ needs.provision-aws-infrastructure.outputs.ssh_key }}
           port: 22
           script: |
             sudo chown -R ubuntu:www-data /var/www/html
@@ -121,4 +119,4 @@ jobs:
           echo "### 🚀 Automated AWS Provisioning & Deployment Complete!" >> $GITHUB_STEP_SUMMARY
           echo "**Website URL**: http://$EC2_IP" >> $GITHUB_STEP_SUMMARY
           echo "**EC2 Public IP**: \`$EC2_IP\`" >> $GITHUB_STEP_SUMMARY
-          echo "**SSH Key Source**: Terraform Dynamic RSA Key Pair 🔑" >> $GITHUB_STEP_SUMMARY
+          echo "**Authentication**: AWS IAM Access Keys 🔑" >> $GITHUB_STEP_SUMMARY
