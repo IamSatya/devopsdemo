@@ -1,7 +1,7 @@
-# Local Terraform State & Cache Directories
+# Ignore local terraform provider binaries and cache
 .terraform/
-*.tfstate
-*.tfstate.*
+
+# Ignore local secret tfvars files
 *.tfvars
 !*.tfvars.example
 

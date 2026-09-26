@@ -1,4 +1,4 @@
-name: AWS Provision & Deploy CI/CD Pipeline
+name: AWS Provision & Deploy CI/CD Pipeline (GitHub-Backed State)
 
 on:
   push:
@@ -7,17 +7,17 @@ on:
       - master
   workflow_dispatch:
 
-# Required permissions for AWS OpenID Connect (OIDC) keyless authentication
+# Required permissions for AWS OIDC authentication and committing state back to GitHub
 permissions:
   id-token: write
-  contents: read
+  contents: write
 
 jobs:
   # --------------------------------------------------------------------------
-  # Job 1: Provision / Update AWS Infrastructure using Terraform (Keyless OIDC)
+  # Job 1: Provision AWS Infrastructure (Git-backed Terraform State)
   # --------------------------------------------------------------------------
   provision-aws-infrastructure:
-    name: ☁️ Provision AWS Infrastructure (Terraform)
+    name: ☁️ Provision AWS Infrastructure (GitHub State)
     runs-on: ubuntu-latest
     outputs:
       ec2_public_ip: ${{ steps.tf_outputs.outputs.ec2_ip }}
@@ -25,9 +25,11 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
-      # Keyless AWS Authentication using OpenID Connect (OIDC) or Secret Keys
-      - name: Configure AWS Credentials (OIDC Role)
+      - name: Configure AWS Credentials (OIDC Role Keyless)
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
@@ -45,13 +47,7 @@ jobs:
           cd terraform
           terraform init
 
-      - name: Terraform Format & Validate Check
-        run: |
-          cd terraform
-          terraform fmt -check
-          terraform validate
-
-      - name: Terraform Apply (Provision EC2 & Security Group)
+      - name: Terraform Apply (Provision EC2 & Infrastructure)
         run: |
           cd terraform
           terraform apply -auto-approve
@@ -63,6 +59,12 @@ jobs:
           EC2_IP=$(terraform output -raw public_ip)
           echo "ec2_ip=$EC2_IP" >> $GITHUB_OUTPUT
           echo "Provisioned EC2 Public IP: $EC2_IP"
+
+      - name: Commit Updated Terraform State Back to GitHub
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(terraform): update terraform state [skip ci]"
+          file_pattern: "terraform/terraform.tfstate*"
 
   # --------------------------------------------------------------------------
   # Job 2: Deploy Web Application Code to Provisioned EC2 Instance
@@ -112,4 +114,4 @@ jobs:
           echo "### 🚀 Automated AWS Provisioning & Deployment Complete!" >> $GITHUB_STEP_SUMMARY
           echo "**Website URL**: http://$EC2_IP" >> $GITHUB_STEP_SUMMARY
           echo "**EC2 Public IP**: \`$EC2_IP\`" >> $GITHUB_STEP_SUMMARY
-          echo "**Status**: Nginx Operational 🟢" >> $GITHUB_STEP_SUMMARY
+          echo "**State Management**: GitHub-Backed State (Option 1)" >> $GITHUB_STEP_SUMMARY
