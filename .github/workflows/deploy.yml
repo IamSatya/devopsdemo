@@ -72,7 +72,7 @@ jobs:
           file_pattern: "terraform/terraform.tfstate*"
 
   # --------------------------------------------------------------------------
-  # Job 2: Deploy Web Application Code to Provisioned EC2 Instance
+  # Job 2: Deploy Pure HTML/CSS/JS Website to Nginx Web Server
   # --------------------------------------------------------------------------
   deploy-website:
     name: 🚀 Deploy Website to AWS EC2
@@ -88,7 +88,7 @@ jobs:
           echo "Waiting 25 seconds for EC2 instance Nginx web server to complete initialization..."
           sleep 25
 
-      - name: Sync Website Files to AWS EC2 via SCP
+      - name: SCP Website Files to User Directory
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ needs.provision-aws-infrastructure.outputs.ec2_public_ip }}
@@ -96,11 +96,11 @@ jobs:
           key: ${{ needs.provision-aws-infrastructure.outputs.ssh_key }}
           port: 22
           source: "website/*"
-          target: "/var/www/html"
+          target: "/home/ubuntu/website"
           strip_components: 1
           overwrite: true
 
-      - name: Reload Nginx Web Server via SSH
+      - name: Deploy HTML/CSS/JS Files to Nginx Root via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ needs.provision-aws-infrastructure.outputs.ec2_public_ip }}
@@ -108,10 +108,12 @@ jobs:
           key: ${{ needs.provision-aws-infrastructure.outputs.ssh_key }}
           port: 22
           script: |
-            sudo chown -R ubuntu:www-data /var/www/html
-            sudo chmod -R 775 /var/www/html
+            sudo mkdir -p /var/www/html
+            sudo cp -r /home/ubuntu/website/* /var/www/html/
+            sudo chown -R www-data:www-data /var/www/html
+            sudo chmod -R 755 /var/www/html
             sudo systemctl reload nginx
-            echo "🏥 PulseCare Health Website successfully deployed to AWS EC2!"
+            echo "🏥 Basic HTML/CSS/JS Healthcare website successfully deployed to Nginx at /var/www/html!"
 
       - name: Deployment Summary Report
         run: |
@@ -119,4 +121,4 @@ jobs:
           echo "### 🚀 Automated AWS Provisioning & Deployment Complete!" >> $GITHUB_STEP_SUMMARY
           echo "**Website URL**: http://$EC2_IP" >> $GITHUB_STEP_SUMMARY
           echo "**EC2 Public IP**: \`$EC2_IP\`" >> $GITHUB_STEP_SUMMARY
-          echo "**Authentication**: AWS IAM Access Keys 🔑" >> $GITHUB_STEP_SUMMARY
+          echo "**Stack**: Pure HTML5 / Vanilla CSS / JavaScript + Nginx 🌐" >> $GITHUB_STEP_SUMMARY
