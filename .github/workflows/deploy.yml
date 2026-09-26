@@ -1,0 +1,115 @@
+name: AWS Provision & Deploy CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+# Required permissions for AWS OpenID Connect (OIDC) keyless authentication
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  # --------------------------------------------------------------------------
+  # Job 1: Provision / Update AWS Infrastructure using Terraform (Keyless OIDC)
+  # --------------------------------------------------------------------------
+  provision-aws-infrastructure:
+    name: ☁️ Provision AWS Infrastructure (Terraform)
+    runs-on: ubuntu-latest
+    outputs:
+      ec2_public_ip: ${{ steps.tf_outputs.outputs.ec2_ip }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Keyless AWS Authentication using OpenID Connect (OIDC) or Secret Keys
+      - name: Configure AWS Credentials (OIDC Role)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
+
+      - name: Setup Terraform CLI
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+
+      - name: Terraform Init
+        run: |
+          cd terraform
+          terraform init
+
+      - name: Terraform Format & Validate Check
+        run: |
+          cd terraform
+          terraform fmt -check
+          terraform validate
+
+      - name: Terraform Apply (Provision EC2 & Security Group)
+        run: |
+          cd terraform
+          terraform apply -auto-approve
+
+      - name: Extract Terraform Outputs
+        id: tf_outputs
+        run: |
+          cd terraform
+          EC2_IP=$(terraform output -raw public_ip)
+          echo "ec2_ip=$EC2_IP" >> $GITHUB_OUTPUT
+          echo "Provisioned EC2 Public IP: $EC2_IP"
+
+  # --------------------------------------------------------------------------
+  # Job 2: Deploy Web Application Code to Provisioned EC2 Instance
+  # --------------------------------------------------------------------------
+  deploy-website:
+    name: 🚀 Deploy Website to AWS EC2
+    needs: provision-aws-infrastructure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Wait for EC2 Nginx Initialization
+        run: |
+          echo "Waiting 20 seconds for EC2 instance Nginx web server to complete initialization..."
+          sleep 20
+
+      - name: Sync Website Files to AWS EC2 via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ needs.provision-aws-infrastructure.outputs.ec2_public_ip }}
+          username: ${{ secrets.EC2_USERNAME || 'ubuntu' }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          source: "website/*"
+          target: "/var/www/html"
+          strip_components: 1
+          overwrite: true
+
+      - name: Reload Nginx Web Server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ needs.provision-aws-infrastructure.outputs.ec2_public_ip }}
+          username: ${{ secrets.EC2_USERNAME || 'ubuntu' }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            sudo chown -R ubuntu:www-data /var/www/html
+            sudo chmod -R 775 /var/www/html
+            sudo systemctl reload nginx
+            echo "🏥 PulseCare Health Website successfully deployed to AWS EC2!"
+
+      - name: Deployment Summary Report
+        run: |
+          EC2_IP="${{ needs.provision-aws-infrastructure.outputs.ec2_public_ip }}"
+          echo "### 🚀 Automated AWS Provisioning & Deployment Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "**Website URL**: http://$EC2_IP" >> $GITHUB_STEP_SUMMARY
+          echo "**EC2 Public IP**: \`$EC2_IP\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Status**: Nginx Operational 🟢" >> $GITHUB_STEP_SUMMARY

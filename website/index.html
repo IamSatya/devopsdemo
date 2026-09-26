@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PulseCare Health - Modern, compassionate healthcare services with 24/7 telehealth, expert diagnostics, and seamless online scheduling.">
+    <title>PulseCare Health | Next-Generation Healthcare Services</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Emergency Announcement Ticker -->
+    <div class="emergency-ticker">
+        <div class="container emergency-flex">
+            <span class="badge badge-pulse"><i class="fa-solid fa-circle-exclamation"></i> 24/7 Emergency Care</span>
+            <p>Immediate medical assistance available. Call hotline: <strong>+1 (800) 555-PULSE</strong> or launch <a href="#telehealth" class="ticker-link">Instant Virtual Care &rarr;</a></p>
+            <div class="ticker-status"><span class="status-dot"></span> System Operational</div>
+        </div>
+    </div>
+
+    <!-- Main Header / Navigation -->
+    <header class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="brand-logo">
+                <div class="logo-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+                <div class="logo-text">
+                    <span class="brand-name">PulseCare</span>
+                    <span class="brand-tag">HEALTH SERVICES</span>
+                </div>
+            </a>
+
+            <nav class="nav-links" id="navLinks">
+                <a href="#services" class="nav-item">Services</a>
+                <a href="#specialists" class="nav-item">Specialists</a>
+                <a href="#vitals-demo" class="nav-item">Patient Portal</a>
+                <a href="#telehealth" class="nav-item">Telehealth</a>
+                <a href="#faq" class="nav-item">FAQs</a>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="btn btn-outline" onclick="openPortalModal()">
+                    <i class="fa-solid fa-user-lock"></i> Patient Sign In
+                </button>
+                <button class="btn btn-primary btn-glow" onclick="openBookingModal()">
+                    <i class="fa-solid fa-calendar-check"></i> Book Appointment
+                </button>
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-bg-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+        </div>
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <div class="badge-pill">
+                    <i class="fa-solid fa-shield-halved"></i> HIPAA Compliant & Certified Excellence
+                </div>
+                <h1 class="hero-title">
+                    Compassionate Care Meets <span class="gradient-text">Advanced Medicine</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Experience world-class healthcare tailored to your life. From instant 24/7 video consultations to comprehensive diagnostic care, PulseCare connects you with top medical specialists.
+                </p>
+
+                <!-- Search & Quick Action -->
+                <div class="quick-booking-card">
+                    <div class="input-group">
+                        <i class="fa-solid fa-stethoscope input-icon"></i>
+                        <select id="heroSpecialty">
+                            <option value="">Select Medical Specialty...</option>
+                            <option value="cardiology">Cardiology</option>
+                            <option value="telehealth">24/7 Virtual Telehealth</option>
+                            <option value="pediatrics">Pediatrics & Family Care</option>
+                            <option value="neurology">Neurology</option>
+                            <option value="diagnostics">Lab & Imaging Diagnostics</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-location-dot input-icon"></i>
+                        <input type="text" id="heroLocation" placeholder="Zip code or City (e.g. 10001)" value="New York, NY">
+                    </div>
+                    <button class="btn btn-primary" onclick="searchSpecialists()">
+                        <i class="fa-solid fa-magnifying-glass"></i> Find Care
+                    </button>
+                </div>
+
+                <!-- Live Metrics Ticker -->
+                <div class="hero-stats">
+                    <div class="stat-box">
+                        <div class="stat-number" data-target="99.4">99.4%</div>
+                        <div class="stat-label">Patient Satisfaction</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-box">
+                        <div class="stat-number" data-target="15">&lt; 15 min</div>
+                        <div class="stat-label">Virtual Wait Time</div>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-box">
+                        <div class="stat-number" data-target="50">50k+</div>
+                        <div class="stat-label">Patients Served</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="hero-image-wrapper">
+                    <img src="assets/hero_medical.png" alt="PulseCare Medical Staff" class="hero-img">
+                    
+                    <!-- Floating Live Card 1 -->
+                    <div class="floating-card float-top-right glass-panel">
+                        <div class="fc-icon icon-teal"><i class="fa-solid fa-video"></i></div>
+                        <div class="fc-content">
+                            <span class="fc-title">Virtual Care Active</span>
+                            <span class="fc-sub"><i class="fa-solid fa-circle pulse-dot"></i> 48 Doctors Online Now</span>
+                        </div>
+                    </div>
+
+                    <!-- Floating Live Card 2 -->
+                    <div class="floating-card float-bottom-left glass-panel">
+                        <div class="fc-icon icon-emerald"><i class="fa-solid fa-heart-pulse"></i></div>
+                        <div class="fc-content">
+                            <span class="fc-title">Live Vitals Sync</span>
+                            <span class="fc-sub">Heart Rate: 72 BPM | SpO2: 99%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Medical Services Section -->
+    <section class="section-padding" id="services">
+        <div class="container">
+            <div class="section-header text-center">
+                <span class="section-subtitle">OUR SPECIALIZED SERVICES</span>
+                <h2 class="section-title">Comprehensive Healthcare Built Around You</h2>
+                <p class="section-desc">Our multidisciplinary clinical teams use state-of-the-art technology to deliver accurate diagnoses and tailored treatment plans.</p>
+            </div>
+
+            <div class="services-grid">
+                <div class="service-card glass-card">
+                    <div class="service-icon-bg icon-teal">
+                        <i class="fa-solid fa-user-doctor"></i>
+                    </div>
+                    <h3>Primary & Preventive Care</h3>
+                    <p>Routine physicals, chronic disease management, vaccinations, and proactive health screenings for long-term wellness.</p>
+                    <ul class="service-list">
+                        <li><i class="fa-solid fa-check"></i> Annual Wellness Exams</li>
+                        <li><i class="fa-solid fa-check"></i> Preventive Screenings</li>
+                        <li><i class="fa-solid fa-check"></i> Prescriptions & Refills</li>
+                    </ul>
+                    <a href="javascript:void(0)" onclick="openBookingModal('Primary Care')" class="card-link">Schedule Visit &rarr;</a>
+                </div>
+
+                <div class="service-card glass-card highlighted-card" id="telehealth">
+                    <div class="badge-featured">MOST POPULAR</div>
+                    <div class="service-icon-bg icon-blue">
+                        <i class="fa-solid fa-laptop-medical"></i>
+                    </div>
+                    <h3>24/7 Virtual Telehealth</h3>
+                    <p>Connect with board-certified physicians in under 15 minutes from your smartphone or desktop, anytime, anywhere.</p>
+                    <ul class="service-list">
+                        <li><i class="fa-solid fa-check"></i> On-Demand HD Video Calls</li>
+                        <li><i class="fa-solid fa-check"></i> Digital Rx Sent To Local Pharmacy</li>
+                        <li><i class="fa-solid fa-check"></i> Sick Notes & Consultations</li>
+                    </ul>
+                    <a href="javascript:void(0)" onclick="openBookingModal('Telehealth')" class="btn btn-primary btn-full">Start Telehealth Session</a>
+                </div>
+
+                <div class="service-card glass-card">
+                    <div class="service-icon-bg icon-red">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                    </div>
+                    <h3>Advanced Cardiology</h3>
+                    <p>Expert cardiac consultations, ECG monitoring, echo diagnostics, and personalized cardiovascular wellness programs.</p>
+                    <ul class="service-list">
+                        <li><i class="fa-solid fa-check"></i> 12-Lead ECG & Holter</li>
+                        <li><i class="fa-solid fa-check"></i> Echocardiography</li>
+                        <li><i class="fa-solid fa-check"></i> Lipid & Vascular Management</li>
+                    </ul>
+                    <a href="javascript:void(0)" onclick="openBookingModal('Cardiology')" class="card-link">Consult Specialist &rarr;</a>
+                </div>
+
+                <div class="service-card glass-card">
+                    <div class="service-icon-bg icon-purple">
+                        <i class="fa-solid fa-dna"></i>
+                    </div>
+                    <h3>Precision Diagnostics</h3>
+                    <p>High-resolution imaging (MRI/CT), comprehensive blood lab panels, and genomic testing with rapid digital result delivery.</p>
+                    <ul class="service-list">
+                        <li><i class="fa-solid fa-check"></i> Same-Day Lab Results</li>
+                        <li><i class="fa-solid fa-check"></i> Digital Imaging Access</li>
+                        <li><i class="fa-solid fa-check"></i> Genetic Biomarker Analysis</li>
+                    </ul>
+                    <a href="javascript:void(0)" onclick="openBookingModal('Diagnostics')" class="card-link">Book Lab Test &rarr;</a>
+                </div>
+
+                <div class="service-card glass-card">
+                    <div class="service-icon-bg icon-amber">
+                        <i class="fa-solid fa-baby"></i>
+                    </div>
+                    <h3>Pediatric & Adolescent</h3>
+                    <p>Dedicated medical care for infants, kids, and teens delivered by warm, specialized pediatric physicians.</p>
+                    <ul class="service-list">
+                        <li><i class="fa-solid fa-check"></i> Childhood Immunizations</li>
+                        <li><i class="fa-solid fa-check"></i> Growth & Development Checks</li>
+                        <li><i class="fa-solid fa-check"></i> Adolescent Mental Health</li>
+                    </ul>
+                    <a href="javascript:void(0)" onclick="openBookingModal('Pediatrics')" class="card-link">Pediatric Consult &rarr;</a>
+                </div>
+
+                <div class="service-card glass-card">
+                    <div class="service-icon-bg icon-emerald">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h3>Mental Health & Wellbeing</h3>
+                    <p>Confidential psychiatric evaluations, therapy sessions, and stress resilience programs tailored to your emotional health.</p>
+                    <ul class="service-list">
+                        <li><i class="fa-solid fa-check"></i> Licensed Psychotherapy</li>
+                        <li><i class="fa-solid fa-check"></i> Anxiety & Mood Management</li>
+                        <li><i class="fa-solid fa-check"></i> Holistic Psychiatry</li>
+                    </ul>
+                    <a href="javascript:void(0)" onclick="openBookingModal('Mental Health')" class="card-link">Book Therapy &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Telehealth Feature Spotlight -->
+    <section class="spotlight-section">
+        <div class="container spotlight-grid">
+            <div class="spotlight-media">
+                <img src="assets/telehealth_doc.png" alt="Doctor Telehealth Consultation" class="spotlight-img">
+                <div class="spotlight-badge glass-panel">
+                    <i class="fa-solid fa-lock"></i> 256-Bit Encrypted Video Stream
+                </div>
+            </div>
+            <div class="spotlight-content">
+                <span class="section-subtitle">VIRTUAL CARE ANYTIME</span>
+                <h2>Healthcare from the Comfort of Your Home</h2>
+                <p>No waiting rooms. No long commutes. Consult top physicians, receive digital prescriptions, and view diagnostic reports straight from your device.</p>
+                
+                <div class="feature-checks">
+                    <div class="check-item">
+                        <div class="check-icon"><i class="fa-solid fa-circle-check"></i></div>
+                        <div>
+                            <h4>Instant Consultation</h4>
+                            <p>Connect with a doctor in under 15 minutes without booking days in advance.</p>
+                        </div>
+                    </div>
+                    <div class="check-item">
+                        <div class="check-icon"><i class="fa-solid fa-circle-check"></i></div>
+                        <div>
+                            <h4>E-Prescriptions Sent Immediately</h4>
+                            <p>Prescriptions sent directly to over 60,000 partner pharmacies across the country.</p>
+                        </div>
+                    </div>
+                    <div class="check-item">
+                        <div class="check-icon"><i class="fa-solid fa-circle-check"></i></div>
+                        <div>
+                            <h4>Insurance Coverage Supported</h4>
+                            <p>We accept major insurance plans including Aetna, BlueCross, Cigna, and Medicare.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="spotlight-actions">
+                    <button class="btn btn-primary" onclick="openBookingModal('Telehealth')"><i class="fa-solid fa-video"></i> Connect With Doctor Now</button>
+                    <a href="#vitals-demo" class="btn btn-outline"><i class="fa-solid fa-chart-line"></i> View Patient Portal Demo</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Doctor Specialists Section -->
+    <section class="section-padding bg-light" id="specialists">
+        <div class="container">
+            <div class="section-header text-center">
+                <span class="section-subtitle">MEET OUR CLINICAL TEAM</span>
+                <h2 class="section-title">World-Class Doctors Dedicated To You</h2>
+                <p class="section-desc">Our medical specialists hold credentials from top institutions with average 12+ years of experience.</p>
+                
+                <!-- Category Filter Buttons -->
+                <div class="filter-tabs">
+                    <button class="tab-btn active" data-filter="all">All Specialties</button>
+                    <button class="tab-btn" data-filter="cardiology">Cardiology</button>
+                    <button class="tab-btn" data-filter="telehealth">Telehealth & Virtual</button>
+                    <button class="tab-btn" data-filter="pediatrics">Pediatrics</button>
+                    <button class="tab-btn" data-filter="neurology">Neurology</button>
+                </div>
+            </div>
+
+            <div class="doctors-grid" id="doctorsContainer">
+                <!-- Doctor Card 1 -->
+                <div class="doctor-card glass-card" data-category="cardiology">
+                    <div class="doctor-avatar">
+                        <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=400" alt="Dr. Elena Rostova">
+                        <span class="doctor-badge"><i class="fa-solid fa-circle"></i> Available Today</span>
+                    </div>
+                    <div class="doctor-info">
+                        <h3>Dr. Elena Rostova, MD</h3>
+                        <span class="doctor-spec">Chief of Cardiology</span>
+                        <div class="doctor-rating">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <span>4.9 (142 reviews)</span>
+                        </div>
+                        <p class="doctor-meta"><i class="fa-solid fa-graduation-cap"></i> Johns Hopkins University | 14 Yrs Exp</p>
+                        <div class="doctor-actions">
+                            <button class="btn btn-outline btn-sm" onclick="openBookingModal('Cardiology', 'Dr. Elena Rostova')">Book Visit</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doctor Card 2 -->
+                <div class="doctor-card glass-card" data-category="telehealth">
+                    <div class="doctor-avatar">
+                        <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=400" alt="Dr. Marcus Vance">
+                        <span class="doctor-badge badge-telehealth"><i class="fa-solid fa-video"></i> Telehealth Lead</span>
+                    </div>
+                    <div class="doctor-info">
+                        <h3>Dr. Marcus Vance, DO</h3>
+                        <span class="doctor-spec">Family & Urgent Virtual Care</span>
+                        <div class="doctor-rating">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star-half-stroke"></i>
+                            <span>4.8 (210 reviews)</span>
+                        </div>
+                        <p class="doctor-meta"><i class="fa-solid fa-graduation-cap"></i> Harvard Medical School | 11 Yrs Exp</p>
+                        <div class="doctor-actions">
+                            <button class="btn btn-primary btn-sm" onclick="openBookingModal('Telehealth', 'Dr. Marcus Vance')">Start Video Consult</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doctor Card 3 -->
+                <div class="doctor-card glass-card" data-category="pediatrics">
+                    <div class="doctor-avatar">
+                        <img src="https://images.unsplash.com/photo-1594824813566-78a9c298075f?auto=format&fit=crop&q=80&w=400" alt="Dr. Sarah Jenkins">
+                        <span class="doctor-badge"><i class="fa-solid fa-circle"></i> Available Today</span>
+                    </div>
+                    <div class="doctor-info">
+                        <h3>Dr. Sarah Jenkins, MD</h3>
+                        <span class="doctor-spec">Pediatric Specialist</span>
+                        <div class="doctor-rating">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <span>5.0 (98 reviews)</span>
+                        </div>
+                        <p class="doctor-meta"><i class="fa-solid fa-graduation-cap"></i> Stanford Medical | 9 Yrs Exp</p>
+                        <div class="doctor-actions">
+                            <button class="btn btn-outline btn-sm" onclick="openBookingModal('Pediatrics', 'Dr. Sarah Jenkins')">Book Visit</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doctor Card 4 -->
+                <div class="doctor-card glass-card" data-category="neurology">
+                    <div class="doctor-avatar">
+                        <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=400" alt="Dr. David Chen">
+                        <span class="doctor-badge"><i class="fa-solid fa-circle"></i> Available Tomorrow</span>
+                    </div>
+                    <div class="doctor-info">
+                        <h3>Dr. David Chen, MD, PhD</h3>
+                        <span class="doctor-spec">Neurologist & Brain Specialist</span>
+                        <div class="doctor-rating">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <span>4.9 (176 reviews)</span>
+                        </div>
+                        <p class="doctor-meta"><i class="fa-solid fa-graduation-cap"></i> Columbia University | 16 Yrs Exp</p>
+                        <div class="doctor-actions">
+                            <button class="btn btn-outline btn-sm" onclick="openBookingModal('Neurology', 'Dr. David Chen')">Book Visit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Patient Portal / Live Vitals Dashboard Simulator Section -->
+    <section class="section-padding portal-preview-section" id="vitals-demo">
+        <div class="container">
+            <div class="section-header text-center text-white">
+                <span class="section-subtitle subtitle-teal">REAL-TIME HEALTH MONITORING</span>
+                <h2>Integrated Patient Portal & Vitals Tracking</h2>
+                <p>PulseCare syncs with connected health devices (Apple Health, Fitbit, Dexcom) to monitor patient vitals in real time.</p>
+            </div>
+
+            <div class="portal-dashboard-window glass-panel-dark">
+                <!-- Portal Header Bar -->
+                <div class="portal-header">
+                    <div class="portal-user">
+                        <div class="user-avatar-sm">JD</div>
+                        <div>
+                            <strong>Jane Doe</strong>
+                            <span class="patient-id">ID: #P-884920 • Age 34</span>
+                        </div>
+                    </div>
+                    <div class="portal-controls">
+                        <span class="live-pill"><i class="fa-solid fa-circle pulse-dot"></i> Live Stream Active</span>
+                        <button class="btn btn-sm btn-outline-light" onclick="simulateVitalsAlert()"><i class="fa-solid fa-rotate"></i> Refresh Vitals</button>
+                    </div>
+                </div>
+
+                <!-- Dashboard Content Grid -->
+                <div class="portal-grid">
+                    <!-- Heart Rate Widget with Animated Line -->
+                    <div class="vitals-card">
+                        <div class="vc-header">
+                            <span class="vc-title"><i class="fa-solid fa-heart-pulse icon-red"></i> Heart Rate</span>
+                            <span class="vc-status text-emerald">Normal Rhythm</span>
+                        </div>
+                        <div class="vc-value">
+                            <span id="liveBpm">72</span> <small>BPM</small>
+                        </div>
+                        <div class="ecg-canvas-container">
+                            <svg class="ecg-svg" viewBox="0 0 500 80">
+                                <path class="ecg-path" d="M 0 40 L 60 40 L 70 20 L 80 65 L 95 10 L 110 50 L 120 40 L 200 40 L 210 20 L 220 65 L 235 10 L 250 50 L 260 40 L 340 40 L 350 20 L 360 65 L 375 10 L 390 50 L 400 40 L 500 40" />
+                            </svg>
+                        </div>
+                        <div class="vc-footer">Range: 60 - 90 BPM | Resting</div>
+                    </div>
+
+                    <!-- Blood Pressure Widget -->
+                    <div class="vitals-card">
+                        <div class="vc-header">
+                            <span class="vc-title"><i class="fa-solid fa-droplet icon-blue"></i> Blood Pressure</span>
+                            <span class="vc-status text-emerald">Optimal</span>
+                        </div>
+                        <div class="vc-value">
+                            <span id="liveBp">118/78</span> <small>mmHg</small>
+                        </div>
+                        <div class="bp-bar-visual">
+                            <div class="bp-indicator" style="width: 70%;"></div>
+                        </div>
+                        <div class="vc-footer">Systolic / Diastolic Target</div>
+                    </div>
+
+                    <!-- Oxygen Saturation -->
+                    <div class="vitals-card">
+                        <div class="vc-header">
+                            <span class="vc-title"><i class="fa-solid fa-wind icon-teal"></i> Oxygen SpO2</span>
+                            <span class="vc-status text-emerald">Excellent</span>
+                        </div>
+                        <div class="vc-value">
+                            <span id="liveSpo2">99</span> <small>%</small>
+                        </div>
+                        <div class="circle-progress-wrapper">
+                            <div class="progress-bar-linear">
+                                <div class="p-fill" style="width: 99%;"></div>
+                            </div>
+                        </div>
+                        <div class="vc-footer">Pulse Oximetry Ambient</div>
+                    </div>
+
+                    <!-- Upcoming Appointments & Prescriptions Widget -->
+                    <div class="vitals-card vitals-card-wide">
+                        <div class="vc-header">
+                            <span class="vc-title"><i class="fa-solid fa-calendar-day icon-purple"></i> Active Care Plan & Next Appointment</span>
+                        </div>
+                        <div class="portal-upcoming-list">
+                            <div class="upcoming-item">
+                                <div class="ui-icon"><i class="fa-solid fa-video"></i></div>
+                                <div class="ui-details">
+                                    <strong>Telehealth Consultation - Dr. Marcus Vance</strong>
+                                    <span>Tomorrow at 10:30 AM EST • Virtual Room #VC-991</span>
+                                </div>
+                                <button class="btn btn-sm btn-primary" onclick="alert('Entering Virtual Waiting Room... Initializing encrypted video stream.')">Join Call</button>
+                            </div>
+
+                            <div class="upcoming-item">
+                                <div class="ui-icon icon-bg-teal"><i class="fa-solid fa-pills"></i></div>
+                                <div class="ui-details">
+                                    <strong>Lisopril 10mg Daily Prescription Refill</strong>
+                                    <span>Ready at Walgreens NYC Main • Rx #998341</span>
+                                </div>
+                                <button class="btn btn-sm btn-outline-light" onclick="alert('Refill requested! Sent notification to pharmacy.')">Refill Rx</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="section-padding" id="faq">
+        <div class="container">
+            <div class="section-header text-center">
+                <span class="section-subtitle">FREQUENTLY ASKED QUESTIONS</span>
+                <h2 class="section-title">Got Questions? We Have Answers</h2>
+            </div>
+
+            <div class="faq-accordion-container">
+                <div class="faq-item">
+                    <button class="faq-trigger">
+                        <span>How quickly can I see a doctor via Telehealth?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-content">
+                        <p>Our 24/7 Virtual Telehealth platform connects you with board-certified physicians in 15 minutes or less. No pre-booking required for urgent consults.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-trigger">
+                        <span>Does PulseCare accept my health insurance?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-content">
+                        <p>Yes! We partner with major national and regional insurers including BlueCross BlueShield, Aetna, Cigna, UnitedHealthcare, Humana, and Medicare. Self-pay flat pricing is also available.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-trigger">
+                        <span>How are my medical records protected?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-content">
+                        <p>PulseCare adheres to strict HIPAA compliance standards. All health data is encrypted in transit and at rest using AES 256-bit encryption protocol across cloud infrastructure.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-trigger">
+                        <span>How do digital prescriptions work?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-content">
+                        <p>During or after your consultation, your physician securely transmits your prescription directly to your chosen local pharmacy for immediate pick-up or home delivery.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <div class="brand-logo">
+                    <div class="logo-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+                    <div class="logo-text">
+                        <span class="brand-name">PulseCare</span>
+                        <span class="brand-tag">HEALTH SERVICES</span>
+                    </div>
+                </div>
+                <p>Delivering compassionate, high-tech healthcare services to individuals and families nationwide.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Medical Services</h4>
+                <ul>
+                    <li><a href="#services">24/7 Virtual Telehealth</a></li>
+                    <li><a href="#services">Cardiology Services</a></li>
+                    <li><a href="#services">Pediatrics & Family</a></li>
+                    <li><a href="#services">Lab & Diagnostics</a></li>
+                    <li><a href="#services">Mental Health Therapy</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Patient Resources</h4>
+                <ul>
+                    <li><a href="#vitals-demo">Patient Portal Login</a></li>
+                    <li><a href="javascript:void(0)" onclick="openBookingModal()">Schedule Appointment</a></li>
+                    <li><a href="#faq">Insurance & Billing</a></li>
+                    <li><a href="#faq">HIPAA Privacy Policy</a></li>
+                    <li><a href="#">System Status</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Emergency Contact</h4>
+                <p><i class="fa-solid fa-phone icon-teal"></i> 24/7 Hotline: +1 (800) 555-PULSE</p>
+                <p><i class="fa-solid fa-envelope icon-teal"></i> care@pulsecarehealth.com</p>
+                <p><i class="fa-solid fa-location-dot icon-teal"></i> 750 Medical Center Plaza, New York, NY 10016</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container fb-flex">
+                <p>&copy; 2026 PulseCare Health Inc. All Rights Reserved. HIPAA Compliant & ISO Certified.</p>
+                <p>AWS EC2 & Nginx Automated Infrastructure</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Appointment Booking Modal -->
+    <div class="modal-backdrop" id="bookingModal">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeBookingModal()">&times;</button>
+            
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-calendar-check icon-teal"></i> Book Medical Appointment</h3>
+                <p>Select your service, choose a doctor, and schedule your appointment in 60 seconds.</p>
+            </div>
+
+            <form id="bookingForm" onsubmit="handleBookingSubmit(event)">
+                <div class="form-step active" id="step1">
+                    <div class="form-group">
+                        <label for="modalService">Select Specialty / Service</label>
+                        <select id="modalService" required onchange="updateDoctorDropdown()">
+                            <option value="Telehealth">24/7 Virtual Telehealth Consultation</option>
+                            <option value="Cardiology">Cardiology & Heart Diagnostics</option>
+                            <option value="Primary Care">Primary & Family Medicine</option>
+                            <option value="Pediatrics">Pediatrics & Child Care</option>
+                            <option value="Neurology">Neurology & Brain Health</option>
+                            <option value="Mental Health">Mental Health & Counseling</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modalDoctor">Select Preferred Doctor</label>
+                        <select id="modalDoctor" required>
+                            <option value="Dr. Marcus Vance (Telehealth)">Dr. Marcus Vance, DO (Telehealth)</option>
+                            <option value="Dr. Elena Rostova (Cardiology)">Dr. Elena Rostova, MD (Cardiology)</option>
+                            <option value="Dr. Sarah Jenkins (Pediatrics)">Dr. Sarah Jenkins, MD (Pediatrics)</option>
+                            <option value="Dr. David Chen (Neurology)">Dr. David Chen, MD (Neurology)</option>
+                            <option value="First Available Physician">First Available Physician</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modalDate">Preferred Date</label>
+                            <input type="date" id="modalDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="modalTime">Time Slot</label>
+                            <select id="modalTime" required>
+                                <option value="09:00 AM">09:00 AM</option>
+                                <option value="10:30 AM">10:30 AM</option>
+                                <option value="01:15 PM">01:15 PM</option>
+                                <option value="03:45 PM">03:45 PM</option>
+                                <option value="05:00 PM">05:00 PM (Virtual)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="patientName">Full Patient Name</label>
+                        <input type="text" id="patientName" placeholder="e.g. Jane Smith" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="patientEmail">Email Address</label>
+                            <input type="email" id="patientEmail" placeholder="jane@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="patientPhone">Phone Number</label>
+                            <input type="tel" id="patientPhone" placeholder="(555) 000-0000" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full btn-glow">Confirm & Reserve Appointment</button>
+                </div>
+            </form>
+
+            <!-- Success Screen inside Modal -->
+            <div class="booking-success" id="bookingSuccess" style="display: none;">
+                <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+                <h3>Appointment Successfully Scheduled!</h3>
+                <p>Your appointment confirmation and telehealth video access link have been dispatched to your email.</p>
+                <div class="confirmation-code-box">
+                    <span>CONFIRMATION ID</span>
+                    <strong id="confCode">PULSE-8921-X9</strong>
+                </div>
+                <button class="btn btn-primary" onclick="closeBookingModal()">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Portal Sign In Modal -->
+    <div class="modal-backdrop" id="portalModal">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closePortalModal()">&times;</button>
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-shield icon-teal"></i> Patient Portal Sign In</h3>
+                <p>Secure HIPAA-compliant portal access to view lab results, vitals, and medical history.</p>
+            </div>
+            <form onsubmit="handlePortalSubmit(event)">
+                <div class="form-group">
+                    <label for="portalEmail">Patient ID or Email</label>
+                    <input type="text" id="portalEmail" placeholder="e.g. P-884920 or name@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="portalPass">Password</label>
+                    <input type="password" id="portalPass" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Sign In To Portal</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
