@@ -38,12 +38,12 @@ jobs:
       - name: Setup Terraform CLI
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.6.0
+          terraform_version: 1.9.8
 
-      - name: Terraform Init
+      - name: Terraform Init & Provider Upgrade
         run: |
           cd terraform
-          terraform init
+          terraform init -upgrade
 
       - name: Terraform Apply (Provision EC2 & Dynamic SSH Key)
         run: |
