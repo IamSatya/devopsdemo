@@ -28,20 +28,20 @@ data "aws_subnets" "default" {
   }
 }
 
-# 3. Dynamic SSH Key Pair Generation for Automated Deployment
+# 3. Dynamic SSH Key Pair Generation with Unique Name Prefix
 resource "tls_private_key" "ssh_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 resource "aws_key_pair" "generated_key" {
-  key_name   = "${var.project_name}-deployer-key"
-  public_key = tls_private_key.ssh_key.public_key_openssh
+  key_name_prefix = "${var.project_name}-key-"
+  public_key      = tls_private_key.ssh_key.public_key_openssh
 }
 
-# 4. Security Group for Healthcare Web Server
+# 4. Security Group for Healthcare Web Server with Unique Name Prefix
 resource "aws_security_group" "web_sg" {
-  name        = "${var.project_name}-${var.environment}-web-sg"
+  name_prefix = "${var.project_name}-sg-"
   description = "Allow HTTP, HTTPS, and SSH inbound traffic for PulseCare Healthcare server"
   vpc_id      = data.aws_vpc.default.id
 
@@ -86,6 +86,10 @@ resource "aws_security_group" "web_sg" {
 
   tags = {
     Name = "${var.project_name}-web-sg"
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
