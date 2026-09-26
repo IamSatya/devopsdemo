@@ -1,4 +1,4 @@
-name: AWS Provision & Deploy CI/CD Pipeline (GitHub-Backed State)
+name: AWS Provision & Deploy CI/CD Pipeline (Automated SSH & Git State)
 
 on:
   push:
@@ -7,20 +7,20 @@ on:
       - master
   workflow_dispatch:
 
-# Required permissions for AWS OIDC authentication and committing state back to GitHub
 permissions:
   id-token: write
   contents: write
 
 jobs:
   # --------------------------------------------------------------------------
-  # Job 1: Provision AWS Infrastructure (Git-backed Terraform State)
+  # Job 1: Provision AWS Infrastructure & Generate SSH Key Pair (Terraform)
   # --------------------------------------------------------------------------
   provision-aws-infrastructure:
-    name: ☁️ Provision AWS Infrastructure (GitHub State)
+    name: ☁️ Provision AWS Infrastructure & SSH Key
     runs-on: ubuntu-latest
     outputs:
       ec2_public_ip: ${{ steps.tf_outputs.outputs.ec2_ip }}
+      ssh_key: ${{ steps.tf_outputs.outputs.ssh_key }}
 
     steps:
       - name: Checkout Repository
@@ -29,7 +29,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: Configure AWS Credentials (OIDC Role Keyless)
+      - name: Configure AWS Credentials (OIDC or Secret Keys)
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
@@ -47,23 +47,30 @@ jobs:
           cd terraform
           terraform init
 
-      - name: Terraform Apply (Provision EC2 & Infrastructure)
+      - name: Terraform Apply (Provision EC2 & Dynamic SSH Key)
         run: |
           cd terraform
           terraform apply -auto-approve
 
-      - name: Extract Terraform Outputs
+      - name: Extract Terraform Outputs & Dynamic SSH Key
         id: tf_outputs
         run: |
           cd terraform
           EC2_IP=$(terraform output -raw public_ip)
           echo "ec2_ip=$EC2_IP" >> $GITHUB_OUTPUT
+          
+          # Extract dynamically generated private SSH key safely
+          SSH_KEY=$(terraform output -raw ssh_private_key_pem)
+          echo "ssh_key<<EOF" >> $GITHUB_OUTPUT
+          echo "$SSH_KEY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
           echo "Provisioned EC2 Public IP: $EC2_IP"
 
       - name: Commit Updated Terraform State Back to GitHub
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore(terraform): update terraform state [skip ci]"
+          commit_message: "chore(terraform): update state and deployment keys [skip ci]"
           file_pattern: "terraform/terraform.tfstate*"
 
   # --------------------------------------------------------------------------
@@ -80,15 +87,15 @@ jobs:
 
       - name: Wait for EC2 Nginx Initialization
         run: |
-          echo "Waiting 20 seconds for EC2 instance Nginx web server to complete initialization..."
-          sleep 20
+          echo "Waiting 25 seconds for EC2 instance Nginx web server to complete initialization..."
+          sleep 25
 
       - name: Sync Website Files to AWS EC2 via SCP
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ needs.provision-aws-infrastructure.outputs.ec2_public_ip }}
-          username: ${{ secrets.EC2_USERNAME || 'ubuntu' }}
-          key: ${{ secrets.EC2_SSH_KEY }}
+          username: 'ubuntu'
+          key: ${{ secrets.EC2_SSH_KEY || needs.provision-aws-infrastructure.outputs.ssh_key }}
           port: 22
           source: "website/*"
           target: "/var/www/html"
@@ -99,8 +106,8 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ needs.provision-aws-infrastructure.outputs.ec2_public_ip }}
-          username: ${{ secrets.EC2_USERNAME || 'ubuntu' }}
-          key: ${{ secrets.EC2_SSH_KEY }}
+          username: 'ubuntu'
+          key: ${{ secrets.EC2_SSH_KEY || needs.provision-aws-infrastructure.outputs.ssh_key }}
           port: 22
           script: |
             sudo chown -R ubuntu:www-data /var/www/html
@@ -114,4 +121,4 @@ jobs:
           echo "### 🚀 Automated AWS Provisioning & Deployment Complete!" >> $GITHUB_STEP_SUMMARY
           echo "**Website URL**: http://$EC2_IP" >> $GITHUB_STEP_SUMMARY
           echo "**EC2 Public IP**: \`$EC2_IP\`" >> $GITHUB_STEP_SUMMARY
-          echo "**State Management**: GitHub-Backed State (Option 1)" >> $GITHUB_STEP_SUMMARY
+          echo "**SSH Key Source**: Terraform Dynamic RSA Key Pair 🔑" >> $GITHUB_STEP_SUMMARY

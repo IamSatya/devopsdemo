@@ -24,3 +24,9 @@ output "security_group_id" {
   description = "ID of the Web Security Group"
   value       = aws_security_group.web_sg.id
 }
+
+output "ssh_private_key_pem" {
+  description = "Dynamically generated SSH Private Key for GitHub Actions deployment"
+  value       = tls_private_key.ssh_key.private_key_pem
+  sensitive   = true
+}

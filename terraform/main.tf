@@ -16,12 +16,11 @@ data "aws_ami" "ubuntu" {
   }
 }
 
-# 2. Fetch Default VPC
+# 2. Fetch Default VPC & Subnets
 data "aws_vpc" "default" {
   default = true
 }
 
-# Fetch Default Subnets in the VPC
 data "aws_subnets" "default" {
   filter {
     name   = "vpc-id"
@@ -29,13 +28,24 @@ data "aws_subnets" "default" {
   }
 }
 
-# 3. Security Group for Healthcare Web Server
+# 3. Dynamic SSH Key Pair Generation for Automated Deployment
+resource "tls_private_key" "ssh_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "generated_key" {
+  key_name   = "${var.project_name}-deployer-key"
+  public_key = tls_private_key.ssh_key.public_key_openssh
+}
+
+# 4. Security Group for Healthcare Web Server
 resource "aws_security_group" "web_sg" {
   name        = "${var.project_name}-${var.environment}-web-sg"
   description = "Allow HTTP, HTTPS, and SSH inbound traffic for PulseCare Healthcare server"
   vpc_id      = data.aws_vpc.default.id
 
-  # HTTP access from anywhere
+  # HTTP access
   ingress {
     description      = "HTTP Inbound"
     from_port        = 80
@@ -45,7 +55,7 @@ resource "aws_security_group" "web_sg" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
-  # HTTPS access from anywhere
+  # HTTPS access
   ingress {
     description      = "HTTPS Inbound"
     from_port        = 443
@@ -79,13 +89,13 @@ resource "aws_security_group" "web_sg" {
   }
 }
 
-# 4. AWS EC2 Instance for Web Server
+# 5. AWS EC2 Instance for Web Server
 resource "aws_instance" "web_server" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = var.instance_type
   subnet_id              = data.aws_subnets.default.ids[0]
   vpc_security_group_ids = [aws_security_group.web_sg.id]
-  key_name               = var.key_name != "" ? var.key_name : null
+  key_name               = aws_key_pair.generated_key.key_name
 
   user_data = file("${path.module}/scripts/user_data.sh")
 
@@ -109,7 +119,7 @@ resource "aws_instance" "web_server" {
   }
 }
 
-# 5. AWS Elastic IP for static IP persistence
+# 6. AWS Elastic IP for static IP persistence
 resource "aws_eip" "web_eip" {
   instance = aws_instance.web_server.id
   domain   = "vpc"
