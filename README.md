@@ -1,4 +1,4 @@
-# 🏥 PulseCare Health - Automated AWS Infrastructure & CI/CD Deployment
+# 🏥 PulseCare Health - Automated AWS Infrastructure & CI/CD Deployment on AWS
 
 [![GitHub Actions CI/CD](https://img.shields.io/badge/GitHub_Actions-AWS_Provision_%26_Deploy-blue?logo=github-actions)](.github/workflows/deploy.yml)
 [![Terraform](https://img.shields.io/badge/Terraform-1.6+-purple?logo=terraform)](terraform/)
