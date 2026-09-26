@@ -18,18 +18,10 @@ resource "aws_iam_role" "github_actions_role" {
       {
         Effect = "Allow"
         Principal = {
-          Federated = aws_iam_openid_connect_provider.github_oidc.arn
+          Federated = "arn:aws:iam::471112662115:oidc-provider/token.actions.githubusercontent.com"
         }
         Action = "sts:AssumeRoleWithWebIdentity"
         Condition = {
-          StringLike = {
-            "token.actions.githubusercontent.com:sub" = [
-              "repo:IamSatya/devopsdemo:*",
-              "repo:iamsatya/devopsdemo:*",
-              "repo:IamSatya/devopsdemo:ref:refs/heads/*",
-              "repo:iamsatya/devopsdemo:ref:refs/heads/*"
-            ]
-          }
           StringEquals = {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
           }
@@ -39,26 +31,22 @@ resource "aws_iam_role" "github_actions_role" {
   })
 }
 
-# 3. Attach EC2 & VPC Permissions to Role
+# 3. Attach Permissions
 resource "aws_iam_role_policy_attachment" "ec2_full" {
   role       = aws_iam_role.github_actions_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
 }
 
-# Attach S3 Permissions for Remote Terraform State
 resource "aws_iam_role_policy_attachment" "s3_full" {
   role       = aws_iam_role.github_actions_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 
-# Attach DynamoDB Permissions for State Locking
 resource "aws_iam_role_policy_attachment" "dynamodb_full" {
   role       = aws_iam_role.github_actions_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
 }
 
-# 4. Output the Role ARN to be added as a GitHub Secret
 output "github_actions_role_arn" {
-  description = "Set this value as the AWS_ROLE_TO_ASSUME secret in your GitHub Repository"
-  value       = aws_iam_role.github_actions_role.arn
+  value = aws_iam_role.github_actions_role.arn
 }
